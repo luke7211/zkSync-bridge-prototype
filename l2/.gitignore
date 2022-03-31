@@ -1,0 +1,8 @@
+/**/artifacts
+/**/node_modules
+/**/tmp
+/**/cache
+
+#Hardhat files
+cache-zk
+artifacts-zk
