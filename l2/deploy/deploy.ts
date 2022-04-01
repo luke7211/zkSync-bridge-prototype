@@ -10,17 +10,17 @@ import dotenv from "dotenv";
 // An example of a deploy script that will deploy and call a simple contract.
 export default async function (hre: HardhatRuntimeEnvironment) {
   dotenv.config();
-  console.log(`Running deploy script for the L2GovernanceRelay contract`);
+  console.log(`Running deploy script for the L2DAIBridge contract`);
 
   // Initialize the wallet
 
+  //const wallet = new Wallet(process.env["SIGNER_PK"] as string);
   const wallet = new Wallet(process.env["SIGNER_PK"] as string);
-
   // Create deployer object and load the artifact of the contract we want to deploy.
   const deployer = new Deployer(hre, wallet);
   //const artifact = await deployer.loadArtifact("Dai");
   //const artifact = await deployer.loadArtifact("L2DAITokenBridge");
-  const artifact = await deployer.loadArtifact("L2GovernanceRelay");
+  const artifact = await deployer.loadArtifact("L2DAITokenBridge");
 
   // Deposit some funds to L2 to be able to perform deposits.
   const depositAmount = ethers.utils.parseEther("0.001");
@@ -35,23 +35,23 @@ export default async function (hre: HardhatRuntimeEnvironment) {
   //const daiContract = await deployer.deploy(artifact, []);
   //const contractAddress = daiContract.address;
 
-  /*const l2Token = "0x9E25a8e17cc6c20b9E2f9b8943B8aee45Cbb811b";
-  const l1Token = "0x11dD504c8a56d99101946B3eD0AD4562a2fCd3ea";
-  const l1DAIBridgeFutureAddress = "0x3d72bE1B6b0F05a23a973262fA5AC0f681b43d6E";
+  const l2Token = "0x9E25a8e17cc6c20b9E2f9b8943B8aee45Cbb811b";
+  const l1Token = "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844";
+  const l1DAIBridgeFutureAddress = "0x50bE932d2453e9D21d48BcF1132a1381A4FF8CC9";
 
   const l2TokenBridgeContract = await deployer.deploy(artifact, [
     l2Token,
     l1Token,
     l1DAIBridgeFutureAddress,
   ]);
-  const contractAddress = l2TokenBridgeContract.address; */
+  const contractAddress = l2TokenBridgeContract.address;
 
-  const l1GovernanceRelayAddress = "0x106081EC9E2132E304655F0964a93010D9aFc9f2";
+  /*const l1GovernanceRelayAddress = "0x2E2C9c63Be433e10a516E48F4E8efD917D7C9F23";
 
   const l2GovernanceRelayContract = await deployer.deploy(artifact, [
     l1GovernanceRelayAddress,
   ]);
-  const contractAddress = l2GovernanceRelayContract.address;
+  const contractAddress = l2GovernanceRelayContract.address;*/
 
   console.log(`${artifact.contractName} was deployed to ${contractAddress}`);
 }

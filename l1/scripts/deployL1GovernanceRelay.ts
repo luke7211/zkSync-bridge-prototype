@@ -9,7 +9,7 @@ import { Provider } from "zksync-web3";
 async function main() {
   const l2Provider = new Provider("https://zksync2-testnet.zksync.dev");
   const zkSyncAddress = await l2Provider.getMainContractAddress();
-  const l2GovernanceRelay = "0x55AB076B771c9fB7C686349c3Fe93d60aa4E6ce6"; // L2 Governance Relayer
+  const l2GovernanceRelay = "0x614af89Bb7C61Dad3685E7a8f4785965878C2E6e"; // L2 Governance Relayer
 
   const L1GovernanceRelay = await ethers.getContractFactory(
     "L1GovernanceRelay"

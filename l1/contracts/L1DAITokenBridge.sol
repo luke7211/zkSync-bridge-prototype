@@ -15,10 +15,26 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 pragma solidity >=0.7.6;
+enum OpTree {
+    Full,
+    Rollup
+}
 
-import "@matterlabs/zksync-contracts/contracts/interfaces/IZkSync.sol";
-import "@matterlabs/zksync-contracts/contracts/libraries/Operations.sol";
-import {Address} from "@openzeppelin/contracts/utils/Address.sol";
+enum QueueType {
+    Deque,
+    HeapBuffer,
+    Heap
+}
+
+interface ZkSyncLike {
+    function requestExecute(
+        address _contractAddressL2,
+        bytes memory _calldata,
+        uint256 _ergsLimit,
+        QueueType _queueType,
+        OpTree _opTree
+    ) external payable;
+}
 
 interface TokenLike {
     function transferFrom(
@@ -111,13 +127,7 @@ contract L1DAITokenBridge {
         uint256 _amount,
         uint32 _l2Gas,
         bytes calldata _data
-    ) external {
-        // Used to stop deposits from contracts (avoid accidentally lost tokens)
-        // Note: This check could be bypassed by a malicious contract via initcode, but it takes care of the user error we want to avoid.
-        require(
-            !Address.isContract(msg.sender),
-            "L1DAITokenBridge/Sender-not-EOA"
-        );
+    ) external payable {
         require(
             _l1Token == l1Token && _l2Token == l2Token,
             "L1DAITokenBridge/token-not-dai"
@@ -133,7 +143,7 @@ contract L1DAITokenBridge {
         uint256 _amount,
         uint32 _l2Gas,
         bytes calldata _data
-    ) external {
+    ) external payable {
         require(
             _l1Token == l1Token && _l2Token == l2Token,
             "L1DAITokenBridge/token-not-dai"
@@ -181,13 +191,13 @@ contract L1DAITokenBridge {
         bytes memory data,
         uint256 ergsLimit
     ) internal {
-        IZkSync zksync = IZkSync(zkSyncAddress);
+        ZkSyncLike zksync = ZkSyncLike(zkSyncAddress);
         zksync.requestExecute{value: msg.value}(
             contractAddr,
             data,
             ergsLimit,
-            Operations.QueueType.Deque,
-            Operations.OpTree.Full
+            QueueType.Deque,
+            OpTree.Full
         );
     }
 }

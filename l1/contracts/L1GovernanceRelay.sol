@@ -16,13 +16,32 @@
 
 pragma solidity >=0.7.6;
 
-import "@matterlabs/zksync-contracts/contracts/interfaces/IZkSync.sol";
-import "@matterlabs/zksync-contracts/contracts/libraries/Operations.sol";
-
 // Relay a message from L1 to L2GovernanceRelay
 
+/// @notice Indicator that the operation can interact with Rollup and Porter trees, or only with Rollup
+enum OpTree {
+    Full,
+    Rollup
+}
+
+enum QueueType {
+    Deque,
+    HeapBuffer,
+    Heap
+}
+
+interface ZkSyncLike {
+    function requestExecute(
+        address _contractAddressL2,
+        bytes memory _calldata,
+        uint256 _ergsLimit,
+        QueueType _queueType,
+        OpTree _opTree
+    ) external payable;
+}
+
 interface L2GovernanceRelayLike {
-    function relay(address target, bytes calldata targetData) external;
+    function relay(address target, bytes calldata targetData) external payable;
 }
 
 contract L1GovernanceRelay {
@@ -78,13 +97,13 @@ contract L1GovernanceRelay {
         bytes memory data,
         uint256 ergsLimit
     ) internal {
-        IZkSync zksync = IZkSync(zkSyncAddress);
+        ZkSyncLike zksync = ZkSyncLike(zkSyncAddress);
         zksync.requestExecute{value: msg.value}(
             contractAddr,
             data,
             ergsLimit,
-            Operations.QueueType.Deque,
-            Operations.OpTree.Full
+            QueueType.Deque,
+            OpTree.Full
         );
     }
 }
