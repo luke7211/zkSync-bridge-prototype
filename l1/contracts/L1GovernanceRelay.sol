@@ -41,7 +41,7 @@ interface ZkSyncLike {
 }
 
 interface L2GovernanceRelayLike {
-    function relay(address target, bytes calldata targetData) external payable;
+    function relay(address target, bytes calldata targetData) external;
 }
 
 contract L1GovernanceRelay {
@@ -82,7 +82,7 @@ contract L1GovernanceRelay {
         address target,
         bytes calldata targetData,
         uint256 ergsLimit
-    ) external auth {
+    ) external payable auth {
         bytes memory data = abi.encodeWithSelector(
             L2GovernanceRelayLike.relay.selector,
             target,
